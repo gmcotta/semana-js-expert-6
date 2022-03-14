@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "live-reload": "nodemon server/index.js"
   },
   "engines": {
     "node": "17"
@@ -23,6 +24,8 @@
   },
   "homepage": "https://github.com/ErickWendel/semanajsexpert-spotify-template#readme",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "pino": "^7.8.0",
+    "pino-pretty": "^7.5.3"
   }
 }
