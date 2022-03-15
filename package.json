@@ -1,7 +1,7 @@
 {
-  "name": "semanajsexpert-spotify-template",
+  "name": "semanajsexpert6-spotify",
   "version": "1.0.0",
-  "description": "Seja bem vindo(a) à sexta Semana Javascript Expert. Este é o código inicial para iniciar nossa jornada.",
+  "description": "Implementação da aplicação da sexta semana js expert.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,22 +9,22 @@
     "live-reload": "nodemon server/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --no-cache",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --no-cache --watchAll",
-    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --no-cache --coverage tests/unit"
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules LOG_DISABLED=true jest --no-cache --coverage tests/unit"
   },
   "engines": {
     "node": "17"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ErickWendel/semanajsexpert-spotify-template.git"
+    "url": "https://github.com/gmcotta/semana-js-expert-6"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ErickWendel/semanajsexpert-spotify-template/issues"
+    "url": "https://github.com/gmcotta/semana-js-expert-6/issues"
   },
-  "homepage": "https://github.com/ErickWendel/semanajsexpert-spotify-template#readme",
+  "homepage": "https://github.com/gmcotta/semana-js-expert-6#readme",
   "devDependencies": {
     "jest": "^27.5.1",
     "nodemon": "^2.0.15",
