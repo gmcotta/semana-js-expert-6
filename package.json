@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "start": "node server/index.js",
     "live-reload": "nodemon server/index.js"
   },
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/ErickWendel/semanajsexpert-spotify-template#readme",
   "devDependencies": {
+    "jest": "^27.5.1",
     "nodemon": "^2.0.15",
     "pino": "^7.8.0",
     "pino-pretty": "^7.5.3"
