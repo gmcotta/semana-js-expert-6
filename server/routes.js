@@ -30,6 +30,15 @@ async function routes(request, response) {
     const { stream } = await controller.getFileStream(controllerHTML);
     return stream.pipe(response);
   }
+  if (method === 'GET' && url.includes('/stream')) {
+    const { stream, onClose } = controller.createClientStream();
+    request.once('close', onClose);
+    response.writeHead(200, {
+      'Content-Type': 'audio/mpeg',
+      'Accept-Ranges': 'bytes'
+    });
+    return stream.pipe(response);
+  }
   if (method === 'GET') {
     const { type, stream } = await controller.getFileStream(url);
     const contentType = CONTENT_TYPE[type];
