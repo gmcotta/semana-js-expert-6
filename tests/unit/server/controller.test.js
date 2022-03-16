@@ -1,8 +1,8 @@
 import { jest, expect, describe, test, beforeEach } from '@jest/globals';
-import fs from 'fs';
+import TestUtil from '../_util/testUtil';
 
-import { Controller } from '../../../server/controller';
 import { Service } from '../../../server/service';
+import { Controller } from '../../../server/controller';
 
 describe('#Controller', () => {
   beforeEach(() => {
@@ -11,11 +11,21 @@ describe('#Controller', () => {
   });
 
   describe('getFileStream()', () => {
-    test('should return value', async () => {
+    test('should return file stream', async () => {
       const controller = new Controller();
-
-      jest.spyOn(Service.prototype, 'getFileStream').mockResolvedValue('mock');
-      expect(await controller.getFileStream('filename')).toBe('mock');
+      const mockStream = TestUtil.generateReadableStream(['mock']);
+      const mockFileName = 'filename.html';
+      const mockType = '.html';
+      jest.spyOn(Service.prototype, Service.prototype.getFileStream.name)
+        .mockResolvedValue({
+          stream: mockStream,
+          type: mockType
+        });
+        
+      expect(await controller.getFileStream(mockFileName)).toStrictEqual({
+        stream: mockStream,
+        type: mockType
+      });
     });
   });
 });

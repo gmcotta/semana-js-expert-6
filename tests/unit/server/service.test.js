@@ -5,6 +5,7 @@ import path from 'path';
 
 import { Service } from '../../../server/service.js';
 import config from '../../../server/config.js';
+import TestUtil from '../_util/testUtil.js';
 
 const {
   dir: {
@@ -21,8 +22,13 @@ describe('#Service', () => {
   describe('createFileStream()', () => {
     test('should create file stream', () => {
       const service = new Service();
-      jest.spyOn(fs, fs.createReadStream.name).mockReturnValue('mock');
-      expect(service.createFileStream('filename')).toBe('mock');
+      const mockReadSteam = TestUtil.generateReadableStream(['mock']);
+      const mockFileName = 'filename.html';
+      jest.spyOn(fs, fs.createReadStream.name).mockReturnValue(mockReadSteam);
+
+      expect(service.createFileStream(mockFileName))
+        .toStrictEqual(mockReadSteam);
+      expect(fs.createReadStream).toHaveBeenCalledWith(mockFileName);
     });
   });
 
@@ -32,7 +38,7 @@ describe('#Service', () => {
       const file = 'file.ext';
       const expectedName = path.join(publicDirectory, file);
       const expectedType = '.ext';
-      jest.spyOn(fsPromises, 'access').mockResolvedValue();
+      jest.spyOn(fsPromises, fsPromises.access.name).mockResolvedValue();
 
       expect(await service.getFileInfo(file)).toStrictEqual({
         type: expectedType,
@@ -45,16 +51,22 @@ describe('#Service', () => {
     test('should get file stream', async () => {
       const service = new Service();
       const file = 'file.ext';
-      jest.spyOn(Service.prototype, 'getFileInfo').mockResolvedValue({
-        type: 'mocked type',
-        name: 'mocked name'
+      const expectedName = path.join(publicDirectory, file);
+      const expectedType = '.ext';
+      const mockStream = TestUtil.generateReadableStream(['mock']);
+      jest.spyOn(service, service.getFileInfo.name).mockResolvedValue({
+        type: expectedType,
+        name: expectedName
       });
-      jest.spyOn(Service.prototype, 'createFileStream')
-        .mockReturnValue('mock stream');
+      jest.spyOn(service, service.createFileStream.name)
+        .mockReturnValue(mockStream);
+
       expect(await service.getFileStream(file)).toStrictEqual({
-        stream: 'mock stream',
-        type: 'mocked type'
+        stream: mockStream,
+        type: expectedType
       });
+      expect(service.getFileInfo).toHaveBeenCalledWith(file);
+      expect(service.createFileStream).toHaveBeenCalledWith(expectedName);
     });
   });
 });
