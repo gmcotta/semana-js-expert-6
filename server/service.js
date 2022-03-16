@@ -3,18 +3,28 @@ import fsPromises from 'fs/promises';
 import { join, extname } from 'path';
 import { randomUUID } from 'crypto';
 import { PassThrough } from 'stream';
+import childProcess from 'child_process';
+// import throttle from 'throttle';
 
 import config from './config.js';
+import { logger } from './util.js';
 
 const {
   dir: {
     publicDirectory
+  },
+  constants: {
+    fallbackBitRate
   }
 } = config;
 
 export class Service {
   constructor() {
     this.clientStreams = new Map();
+  }
+
+  _executeSoxCommand(args) {
+    return childProcess.spawn('sox', args);
   }
 
   createClientStream() {
@@ -51,5 +61,20 @@ export class Service {
       stream: this.createFileStream(name),
       type
     };
+  }
+
+  async getBitRate(song) {
+    try {
+      const args = ['--i', '-B', song];
+      const { stderr, stdout, stdin } = this._executeSoxCommand(args);
+      const [success, error] = [stdout, stderr].map(stream => stream.read());
+      if (error) {
+        return await Promise.reject(error);
+      }
+      return success.toString().trim().replace(/k/, '000');
+    } catch (error) {
+      logger.error(`Bit rate error: ${error}`);
+      return fallbackBitRate;
+    }
   }
 };
