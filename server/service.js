@@ -2,9 +2,11 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 import { join, extname } from 'path';
 import { randomUUID } from 'crypto';
-import { PassThrough } from 'stream';
+import { PassThrough, Writable } from 'stream';
+import streamsPromises from 'stream/promises';
 import childProcess from 'child_process';
-// import throttle from 'throttle';
+import { once } from 'events';
+import Throttle from 'throttle';
 
 import config from './config.js';
 import { logger } from './util.js';
@@ -14,13 +16,20 @@ const {
     publicDirectory
   },
   constants: {
-    fallbackBitRate
+    fallbackBitRate,
+    englishConversation,
+    bitRateDivisor
   }
 } = config;
 
 export class Service {
   constructor() {
     this.clientStreams = new Map();
+    this.currentSong = englishConversation;
+    this.currentBitRate = 0;
+    this.throttleTransform = {};
+    this.currentReadable = {};
+    this.startStreaming();
   }
 
   _executeSoxCommand(args) {
@@ -67,6 +76,10 @@ export class Service {
     try {
       const args = ['--i', '-B', song];
       const { stderr, stdout, stdin } = this._executeSoxCommand(args);
+      await Promise.all([
+        once(stdout, 'readable'),
+        once(stderr, 'readable')
+      ]);
       const [success, error] = [stdout, stderr].map(stream => stream.read());
       if (error) {
         return await Promise.reject(error);
@@ -76,5 +89,34 @@ export class Service {
       logger.error(`Bit rate error: ${error}`);
       return fallbackBitRate;
     }
+  }
+
+  broadcast() {
+    return new Writable({
+      write: (chunk, enc, cb) => {
+        for (const [id, stream] of this.clientStreams) {
+          if (stream.writableEnded) {
+            this.clientStreams.delete(id);
+            continue;
+          }
+          stream.write(chunk);
+        }
+        cb();
+      }
+    })
+  }
+
+  async startStreaming() {
+    logger.info(`Starting with ${this.currentSong}`);
+    const songOrignalBitRate = await this.getBitRate(this.currentSong);
+    this.currentBitRate = songOrignalBitRate / bitRateDivisor;
+    const calculatedBitRate = this.currentBitRate;
+    const throttleTransform = this.throttleTransform = new Throttle(calculatedBitRate);
+    const songReadable = this.currentReadable = this.createFileStream(this.currentSong);
+    return streamsPromises.pipeline(
+      songReadable,
+      throttleTransform,
+      this.broadcast()
+    )
   }
 };

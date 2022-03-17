@@ -1,0 +1,34 @@
+Informações do áudio
+sox \
+ --i \
+ "audio/songs/conversation.mp3"
+
+sox \
+ --i \
+ "audio/fx/Laughing Sound #3 - Audience laughing Sound Effects(HD) No Copyright Sound Effects (128 kbps).mp3"
+
+Transformar áudio
+sox \
+ -v 0.99 \
+ -t mp3 \
+ "audio/fx/Laughing Sound #3 - Audience laughing Sound Effects(HD) No Copyright Sound Effects (128 kbps).mp3" \
+ -r 48000 \
+ -t mp3 \
+ "output.mp3"
+
+Informação do bit rate
+sox \
+ --i \
+ -B \
+ "audio/fx/Laughing Sound #3 - Audience laughing Sound Effects(HD) No Copyright Sound Effects (128 kbps).mp3"
+
+Concatenar dois áudios
+sox \
+  -t mp3 \
+  -v 0.99 \
+  -m "audio/songs/conversation.mp3" \
+  -t mp3 \
+  -v 0.99 \
+  "audio/fx/Laughing Sound #3 - Audience laughing Sound Effects(HD) No Copyright Sound Effects (128 kbps).mp3" \
+  -t mp3 \
+  "output.mp3"
