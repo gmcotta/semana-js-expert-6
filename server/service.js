@@ -29,7 +29,6 @@ export class Service {
     this.currentBitRate = 0;
     this.throttleTransform = {};
     this.currentReadable = {};
-    this.startStreaming();
   }
 
   _executeSoxCommand(args) {
@@ -118,5 +117,10 @@ export class Service {
       throttleTransform,
       this.broadcast()
     )
+  }
+
+  stopStreaming() {
+    logger.info(`Ending with ${this.currentSong}`);
+    this.throttleTransform?.end();
   }
 };

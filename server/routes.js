@@ -1,3 +1,5 @@
+import { once } from 'events';
+
 import config from './config.js';
 import { Controller } from './controller.js';
 import { logger } from './util.js';
@@ -38,6 +40,12 @@ async function routes(request, response) {
       'Accept-Ranges': 'bytes'
     });
     return stream.pipe(response);
+  }
+  if (method === "POST" && url === '/controller') {
+    const data = await once(request, 'data');
+    const item = JSON.parse(data);
+    const result = await controller.handleCommand(item);
+    return response.end(JSON.stringify(result));
   }
   if (method === 'GET') {
     const { type, stream } = await controller.getFileStream(url);
