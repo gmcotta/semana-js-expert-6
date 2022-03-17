@@ -7,10 +7,14 @@
   "scripts": {
     "start": "node server/index.js",
     "live-reload": "nodemon server/index.js",
-    "live-reload:docker": "docker-compose up --build live-reload",
     "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' LOG_DISABLED=true jest --no-cache",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --no-cache --watchAll",
-    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' LOG_DISABLED=true jest --no-cache --coverage tests/unit"
+    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' LOG_DISABLED=true jest --no-cache --coverage tests/unit",
+    "test:e2e": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' LOG_DISABLED=true jest --no-cache tests/e2e",
+    "live-reload:docker": "docker-compose up --build live-reload",
+    "test:docker": "docker-compose up --build test",
+    "test:watch:docker": "docker-compose up --build test-watch",
+    "test:coverage:docker": "docker-compose up --build test-coverage"
   },
   "engines": {
     "node": "17"
