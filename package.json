@@ -31,6 +31,8 @@
     "nodemon": "^2.0.15",
     "pino": "^7.8.0",
     "pino-pretty": "^7.5.3",
+    "portfinder": "^1.0.28",
+    "supertest": "^6.2.2",
     "throttle": "^1.0.3"
   }
 }
