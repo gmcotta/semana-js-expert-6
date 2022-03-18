@@ -36,5 +36,9 @@ export class Controller {
       this.service.stopStreaming();
       return result;
     }
+
+    return {
+      result: 'command not found'
+    };
   }
 }
