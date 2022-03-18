@@ -5,19 +5,26 @@ import supertest from 'supertest';
 import portfinder from 'portfinder';
 
 import Server from '../../../server/server.js';
+import config from '../../../server/config.js';
 
 const getAvailablePort = portfinder.getPortPromise;
 const RETENTION_DATA_PERIOD = 200;
-const DEFAULT_COMMAND_RESPONSE = JSON.stringify({
-  result: 'ok'
-});
-const POSSIBLE_COMMANDS = {
-  start: 'start',
-  stop: 'stop',
-  invalid: 'invalid'
-};
+
+
+const { location: { home }} = config;
 
 describe('API E2E Suite test', () => {
+  const DEFAULT_COMMAND_RESPONSE = JSON.stringify({
+    result: 'ok'
+  });
+  const POSSIBLE_COMMANDS = {
+    start: 'start',
+    stop: 'stop',
+    invalid: 'invalid'
+  };
+
+  let testServer = supertest(Server());
+
   function pipeAndReadStreamData(stream, onChunk) {
     const transform = new Transform({
       transform(chunk, enc, cb) {
@@ -27,12 +34,13 @@ describe('API E2E Suite test', () => {
     });
     return stream.pipe(transform);
   }
-  describe('client workflow', () => { 
+
+  describe('client workflow', () => {
     async function getTestServer() {
       const getSuperTest = port => supertest(`http://localhost:${port}`);
       const port  = await getAvailablePort();
       return new Promise((resolve, reject) => {
-        const server = Server.listen(port)
+        const server = Server().listen(port)
           .once('listening', () => {
             const testServer = getSuperTest(port);
             const response = {
@@ -44,7 +52,7 @@ describe('API E2E Suite test', () => {
             return resolve(response);
           })
           .once('error', reject);
-      })
+      });
     }
 
     function commandSender(testServer) {
@@ -68,6 +76,7 @@ describe('API E2E Suite test', () => {
       server.kill();
       expect(onChunk).not.toHaveBeenCalled();
     });
+
     test('should receive data stream if the process is playing', async () => {
       const server = await getTestServer();
       const stream = server.testServer.get('/stream');
@@ -81,6 +90,16 @@ describe('API E2E Suite test', () => {
       expect(buffer).toBeInstanceOf(Buffer);
       expect(buffer.length).toBeGreaterThan(1000);
       server.kill();
+    });
+  });
+
+  describe('redirects', () => {
+    describe('GET', () => {
+      test('/ - should responde with home location and 302 status code', async () => {
+        const response = await testServer.get('/');
+        expect(response.statusCode).toBe(302);
+        expect(response.headers.location).toBe(home);
+      });
     });
   });
 });
