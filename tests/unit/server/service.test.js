@@ -13,6 +13,9 @@ import { PassThrough } from 'stream';
 const {
   dir: {
     publicDirectory
+  },
+  constants: {
+    fallbackBitRate
   }
 } = config;
 
@@ -104,6 +107,38 @@ describe('#Service', () => {
       service.removeClientStream();
 
       expect(service.clientStreams.delete).toHaveBeenCalled();
+    });
+  });
+
+  describe('getBitRate()', () => {
+    test('should return bit rate with zeros', async () => {
+      const service = new Service();
+      const mockSong = 'song.mp3';
+      jest.spyOn(service, service._executeSoxCommand.name).mockReturnValue({
+        stdout: TestUtil.generateReadableStream([' 128k ']),
+        stderr: TestUtil.generateReadableStream(['']),
+        stdin: TestUtil.generateWritableStream(() => {})
+      });
+      const returnedBitRate = await service.getBitRate(mockSong);
+
+      expect(service._executeSoxCommand)
+        .toHaveBeenCalledWith(['--i', '-B', mockSong]);
+      expect(returnedBitRate).toBe('128000');
+    });
+
+    test('should return default bit rate', async () => {
+      const service = new Service();
+      const mockSong = 'song.mp3';
+      jest.spyOn(service, service._executeSoxCommand.name).mockReturnValue({
+        stdout: TestUtil.generateReadableStream(['']),
+        stderr: TestUtil.generateReadableStream(['error']),
+        stdin: TestUtil.generateWritableStream(() => {})
+      });
+      const returnedBitRate = await service.getBitRate(mockSong);
+
+      expect(service._executeSoxCommand)
+        .toHaveBeenCalledWith(['--i', '-B', mockSong]);
+      expect(returnedBitRate).toBe(fallbackBitRate);
     });
   });
 });
