@@ -174,7 +174,28 @@ describe('#Routes - test suite for api response', () => {
         expect(params.response.end).toHaveBeenCalled();
       });
     });
-  })
+    describe('/controller', () => {
+      test('should handle command', async () => {
+        const params = TestUtil.defaultHandleParams();
+        const body = { command: 'start' };
+        const responseBody = { result: 'ok' };
+        
+        params.request.method = 'POST';
+        params.request.url = '/controller';
+        params.request.push(JSON.stringify(body));
+        
+        jest.spyOn(
+          Controller.prototype, 
+          Controller.prototype.handleCommand.name
+        ).mockResolvedValue(responseBody);
+
+        await handler(...params.values());
+        expect(Controller.prototype.handleCommand).toHaveBeenCalledWith(body);
+        expect(params.response.end)
+          .toHaveBeenCalledWith(JSON.stringify(responseBody));
+      });
+    });
+  });
 
   describe('exceptions', () => {
     describe('invalid file', () => {
