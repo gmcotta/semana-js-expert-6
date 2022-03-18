@@ -4,6 +4,7 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import childProcess from 'child_process';
 import { PassThrough, Writable } from 'stream';
+import Throttle from 'throttle';
 
 import { Service } from '../../../server/service.js';
 import config from '../../../server/config.js';
@@ -14,7 +15,8 @@ const {
     publicDirectory
   },
   constants: {
-    fallbackBitRate
+    fallbackBitRate,
+    bitRateDivisor
   }
 } = config;
 
@@ -157,6 +159,19 @@ describe('#Service', () => {
 
       expect(writable).toBeInstanceOf(Writable);
       expect(service.clientStreams.delete).toHaveBeenCalledWith('1');
+    });
+  });
+
+  
+
+  describe('stopStreaming()', () => {
+    test('should stop streaming with throttleTransform', () => {
+      const service = new Service();
+      service.throttleTransform = new Throttle(64000);
+      jest.spyOn(service.throttleTransform, 'end')
+        .mockReturnValue();
+      service.stopStreaming();
+      expect(service.throttleTransform.end).toHaveBeenCalled();
     });
   });
 });
