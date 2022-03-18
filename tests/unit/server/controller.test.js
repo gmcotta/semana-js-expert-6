@@ -69,4 +69,23 @@ describe('#Controller', () => {
       expect(Service.prototype.stopStreaming).not.toHaveBeenCalled();
     });
   });
+
+  describe('createClientStream()', () => {
+    test('should return stream and onClose function', () => {
+      const controller = new Controller();
+      const mockStream = TestUtil.generateReadableStream(['mock']);
+      const id = '1';
+      jest.spyOn(Service.prototype, Service.prototype.createClientStream.name)
+        .mockReturnValue({ id, clientStream: mockStream });
+      jest.spyOn(Service.prototype, Service.prototype.removeClientStream.name)
+        .mockReturnValue();
+      const { stream, onClose } = controller.createClientStream();
+
+      expect(Service.prototype.createClientStream).toHaveBeenCalled();
+      expect(stream).toStrictEqual(mockStream);
+
+      onClose();
+      expect(Service.prototype.removeClientStream).toHaveBeenCalledWith(id);
+    });
+  })
 });
