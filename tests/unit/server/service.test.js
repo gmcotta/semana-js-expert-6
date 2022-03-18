@@ -4,6 +4,7 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import childProcess from 'child_process';
 import { PassThrough, Writable } from 'stream';
+import streamPromises from 'stream/promises';
 import Throttle from 'throttle';
 
 import { Service } from '../../../server/service.js';
@@ -162,7 +163,34 @@ describe('#Service', () => {
     });
   });
 
-  
+  describe('startStreaming()', () => {
+    test('should start streaming', async () => {
+      const service = new Service();
+      const currentSong = 'song.mp3';
+      const bitRate = '128000';
+      const songReadable = TestUtil.generateReadableStream(['mock']);
+      service.currentSong = currentSong;
+      jest.spyOn(service, service.getBitRate.name).mockResolvedValue(bitRate);
+      jest.spyOn(service, service.createFileStream.name)
+        .mockReturnValue(songReadable);
+      jest.spyOn(streamPromises, streamPromises.pipeline.name)
+        .mockResolvedValue('mock pipeline');
+      jest.spyOn(service, service.broadcast.name)
+        .mockReturnValue(TestUtil.generateWritableStream(() => {}));
+      const expectedCurrentBitRate = bitRate / bitRateDivisor;
+
+      const result = await service.startStreaming();
+
+      expect(service.currentBitRate).toBe(expectedCurrentBitRate);
+      expect(result).toStrictEqual('mock pipeline');
+      expect(service.createFileStream).toHaveBeenCalledWith(currentSong);
+      expect(streamPromises.pipeline).toHaveBeenCalledWith(
+        songReadable,
+        service.throttleTransform,
+        service.broadcast()
+      );
+    });
+  });
 
   describe('stopStreaming()', () => {
     test('should stop streaming with throttleTransform', () => {
