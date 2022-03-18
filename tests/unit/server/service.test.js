@@ -95,4 +95,15 @@ describe('#Service', () => {
         .toHaveBeenCalledWith(id, clientStream);
     });
   });
+  
+  describe('removeClientStream()', () => {
+    test('should remove client stream', () => {
+      const service = new Service();
+      jest.spyOn(service.clientStreams, service.clientStreams.delete.name)
+        .mockReturnValue();
+      service.removeClientStream();
+
+      expect(service.clientStreams.delete).toHaveBeenCalled();
+    });
+  });
 });
