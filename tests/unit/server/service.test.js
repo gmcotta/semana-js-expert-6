@@ -3,12 +3,11 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from 'path';
 import childProcess from 'child_process';
-import crypto from 'crypto';
+import { PassThrough, Writable } from 'stream';
 
 import { Service } from '../../../server/service.js';
 import config from '../../../server/config.js';
 import TestUtil from '../_util/testUtil.js';
-import { PassThrough } from 'stream';
 
 const {
   dir: {
@@ -139,6 +138,25 @@ describe('#Service', () => {
       expect(service._executeSoxCommand)
         .toHaveBeenCalledWith(['--i', '-B', mockSong]);
       expect(returnedBitRate).toBe(fallbackBitRate);
+    });
+  });
+
+  describe('broadcast()', () => {
+    test('should write chunk and end client stream', () => {
+      const service = new Service();
+
+      jest.spyOn(service.clientStreams, service.clientStreams.delete.name)
+        .mockReturnValue();
+      const mockClientStream1 = TestUtil.generateWritableStream(() => {});
+      const mockClientStream2 = TestUtil.generateWritableStream(() => {});
+      service.clientStreams.set('1', mockClientStream1);
+      service.clientStreams.set('2', mockClientStream2);
+      const writable = service.broadcast();
+      mockClientStream1.end();
+      writable.write('mock');
+
+      expect(writable).toBeInstanceOf(Writable);
+      expect(service.clientStreams.delete).toHaveBeenCalledWith('1');
     });
   });
 });
