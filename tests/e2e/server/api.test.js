@@ -1,6 +1,6 @@
 import { Transform } from 'stream';
 import { setTimeout } from 'timers/promises';
-import { jest, expect, describe, test, beforeEach } from '@jest/globals';
+import { jest, expect, describe, test } from '@jest/globals';
 import supertest from 'supertest';
 import portfinder from 'portfinder';
 
