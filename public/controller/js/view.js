@@ -4,6 +4,7 @@ export default class View {
     this.btnStop = document.getElementById("stop");
     this.buttons = () => Array.from(document.querySelectorAll('button'));
     this.ignoreButtons = new Set(['unassigned']);
+    this.DISABLE_BTN_TIMEOUT = 500;
     async function onBtnClick() {}
     this.onBtnClick = onBtnClick;
   }
@@ -59,6 +60,7 @@ export default class View {
       btn.onclick = this.onStopBtn.bind(this);
       return;
     }
+    btn.onclick = this.onCommandClick.bind(this);
   }
 
   onStopBtn({
@@ -77,5 +79,28 @@ export default class View {
       item => this.ignoreButtons.has(item)
     );
     return !hasUnassignedButtons;
+  }
+
+  async onCommandClick(btn) {
+    const {
+      srcElement: {
+        classList,
+        innerText
+      }
+    } = btn;
+    this.toggleDisableCommandBtn(classList);
+    await this.onBtnClick(innerText);
+    setTimeout(
+      () => this.toggleDisableCommandBtn(classList), 
+      this.DISABLE_BTN_TIMEOUT
+    );
+  }
+
+  toggleDisableCommandBtn(classList) {
+    if (!classList.contains('active')) {
+      classList.add('active');
+      return;
+    }
+    classList.remove('active');
   }
 }
