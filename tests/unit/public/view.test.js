@@ -28,8 +28,7 @@ describe("#View - test suite for presentation layer", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    // jest.spyOn(document, document.getElementById.name)
-    //   .mockReturnValue(mockButtonElement());
+    jest.spyOn(document, 'getElementById').mockReturnValue(mockButtonElement());
   });
 
   describe("changeCommandButtonsVisibility()", () => {

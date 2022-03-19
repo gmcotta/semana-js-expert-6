@@ -11,6 +11,14 @@ export default class Controller {
   }
 
   onLoad() {
-    this.view.onLoad()
+    this.view.configureOnBtnClick(this.commandReceived.bind(this));
+    this.view.onLoad();
+  }
+
+  async commandReceived(text) {
+    const result = await this.service.makeRequest({
+      command: text.toLowerCase()
+    });
+    return result;
   }
 }
