@@ -88,64 +88,25 @@ describe("#View - test suite for presentation layer", () => {
   });
 
   describe('onStartClicked()', () => {
-    test.skip('should call the functions', async () => {
-      const view = new View()
+    test('should call the functions', async () => {
+      const view = new View();
+      jest.spyOn(view, 'onBtnClick').mockResolvedValue();
+      jest.spyOn(view, 'toggleBtnStart').mockReturnValue();
+      jest.spyOn(view, 'changeCommandButtonsVisibility').mockReturnValue();
+      jest.spyOn(view, 'isNotUnassignedButton').mockReturnValue(true);
+      jest.spyOn(view, 'setupBtnAction').mockReturnValue();
 
-      jest.spyOn(
-        view,
-        view.changeCommandButtonsVisibility.name,
-      ).mockReturnValue()
+      const text = 'Start';
+      const button = mockButtonElement({ text });
+      jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce([button]);
 
-      jest.spyOn(
-        view,
-        view.toggleBtnStart.name,
-      ).mockReturnValue()
+      const eventOnClick = { srcElement: button };
+      await view.onStartClicked(eventOnClick);
 
-      jest.spyOn(
-        view,
-        view.onBtnClick.name,
-      ).mockResolvedValue()
-
-      jest.spyOn(
-        view,
-        "changeCommandBtnsVisibility",
-      ).mockReturnValue()
-
-      jest.spyOn(
-        view,
-        view.isNotUnassignedButton.name,
-      ).mockReturnValue(true)
-
-      jest.spyOn(
-        view,
-        view.setupBtnAction.name,
-      ).mockReturnValue()
-
-      const text = 'Start'
-      const btn = makeBtnElement({
-        text
-      })
-
-      jest.spyOn(
-        document,
-        "querySelectorAll",
-      ).mockReturnValueOnce([btn])
-
-
-      const eventOnClick = {
-        srcElement: btn
-      }
-
-      await view.onStartClicked(eventOnClick)
-
-      expect(view.toggleBtnStart).toHaveBeenCalled()
-      expect(view.onBtnClick).toHaveBeenCalledWith(text)
-      expect(view.changeCommandBtnsVisibility).toHaveBeenCalledWith(false)
-      expect(view.notIsUnassignedButton).toHaveBeenNthCalledWith(1, btn)
-
-      const [calls] = view.setupBtnAction.mock.calls[0]
-      expect(view.setupBtnAction).toBeCalledTimes(1)
-      expect(calls).toStrictEqual(btn)
+      expect(view.toggleBtnStart).toHaveBeenCalled();
+      expect(view.onBtnClick).toHaveBeenCalledWith(text);
+      expect(view.changeCommandButtonsVisibility).toHaveBeenCalledWith(false);
+      expect(view.isNotUnassignedButton).toHaveBeenNthCalledWith(1, button);
     });
   });
 
