@@ -6,3 +6,12 @@ server()
   .listen(config.port)
   .on('listening', () => logger.info(`server running at port ${config.port}`));
 
+process.on(
+  'uncaughtException', 
+  error => logger.error(`UncaughtException happened: ${error.stack || error}`)
+);
+
+process.on(
+  'unhandledRejection', 
+  error => logger.error(`UnhandledRejection happened: ${error.stack || error}`)
+);
