@@ -54,6 +54,24 @@ describe('#Controller', () => {
       });
       expect(Service.prototype.stopStreaming).toHaveBeenCalled();
     });
+    test('should return ok for effect command', async () => {
+      const controller = new Controller();
+      const command = 'effect';
+      jest.spyOn(Service.prototype, Service.prototype.startStreaming.name)
+        .mockResolvedValue();
+      jest.spyOn(Service.prototype, Service.prototype.stopStreaming.name)
+        .mockResolvedValue();
+      jest.spyOn(Service.prototype, Service.prototype.readFxByName.name)
+        .mockResolvedValue(command);
+      jest.spyOn(Service.prototype, Service.prototype.appendFxStream.name)
+        .mockReturnValue();
+
+      expect(await controller.handleCommand({ command })).toStrictEqual({
+        result: 'ok'
+      });
+      expect(Service.prototype.appendFxStream).toHaveBeenCalledWith(command);
+
+    });
     test('should return command not found for invalid command', async () => {
       const controller = new Controller();
       const command = 'invalid';
@@ -61,6 +79,8 @@ describe('#Controller', () => {
         .mockResolvedValue();
       jest.spyOn(Service.prototype, Service.prototype.stopStreaming.name)
         .mockResolvedValue();
+      jest.spyOn(Service.prototype, Service.prototype.readFxByName.name)
+        .mockResolvedValue(undefined);
 
       expect(await controller.handleCommand({ command })).toStrictEqual({
         result: 'command not found'
