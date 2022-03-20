@@ -262,4 +262,22 @@ describe("#View - test suite for presentation layer", () => {
         .toHaveBeenNthCalledWith(2, onClickElement.srcElement.classList);
     });
   });
+
+  describe('toggleDisableCommandBtn()', () => {
+    test('should remove active class', () => {
+      const view = new View();
+      const classList = makeClassListElement({ classes: ['active'] });
+      view.toggleDisableCommandBtn(classList);
+      expect(classList.size).toBeFalsy();
+      expect(classList.has('active')).toBeFalsy();
+    });
+
+    test('should add active class', () => {
+      const view  = new View();
+      const classList = makeClassListElement();
+      view.toggleDisableCommandBtn(classList);
+      expect(classList.size).toStrictEqual(1);
+      expect([...classList.values()]).toStrictEqual(['active']);
+    });
+  });
 });
