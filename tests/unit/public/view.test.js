@@ -155,4 +155,38 @@ describe("#View - test suite for presentation layer", () => {
       expect(view.btnStop.classList.add).toBeCalledWith('hidden');
     });
   });
+
+  describe('setupBtnAction()', () => {
+    test('text = start  - should do nothing', () => {
+      const view = new View();
+      const button = mockButtonElement({ text: 'start' });
+      jest.spyOn(view, view.onStopBtn.name).mockReturnValue();
+      jest.spyOn(view, view.onCommandClick.name).mockReturnValue();
+
+      view.setupBtnAction(button);
+
+      expect(view.onStopBtn).not.toHaveBeenCalled();
+      expect(view.onCommandClick).not.toHaveBeenCalled();
+    });
+    
+    test('text = stop - should call onStopBtn', () => {
+      const view = new View();
+      const button = mockButtonElement({ text: 'stop' });
+      jest.spyOn(view, view.onStopBtn.name).mockReturnValue();
+
+      view.setupBtnAction(button);
+
+      expect(button.onclick.name).toStrictEqual(view.onStopBtn.bind(view).name);
+    });
+    
+    test('text = command - should call onCommandClick', () => {
+      const view = new View();
+      const button = mockButtonElement({ text: 'command' });
+      jest.spyOn(view, view.onCommandClick.name).mockReturnValue();
+
+      view.setupBtnAction(button);
+
+      expect(button.onclick.name).toStrictEqual(view.onCommandClick.bind(view).name);
+    });
+  });
 });
