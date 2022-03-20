@@ -13,7 +13,8 @@ import TestUtil from '../_util/testUtil.js';
 
 const {
   dir: {
-    publicDirectory
+    publicDirectory,
+    fxDirectory
   },
   constants: {
     fallbackBitRate,
@@ -200,6 +201,29 @@ describe('#Service', () => {
         .mockReturnValue();
       service.stopStreaming();
       expect(service.throttleTransform.end).toHaveBeenCalled();
+    });
+  });
+
+  describe('readFxByName()', () => {
+    test('should return song path', async () => {
+      const service = new Service();
+      const fxName = 'fx1';
+      const fxSongOnDisk = 'fx1.mp3';
+      const expectedPath = `${fxDirectory}/${fxSongOnDisk}`;
+      jest.spyOn(fsPromises, fsPromises.readdir.name)
+        .mockResolvedValue([fxSongOnDisk]);
+      const returnedPath = await service.readFxByName(fxName);
+      expect(returnedPath).toStrictEqual(expectedPath);
+      expect(fsPromises.readdir).toHaveBeenCalledWith(fxDirectory);
+    });
+    test('should reject if song was not found', () => {
+      const service = new Service();
+      const fxName = 'fx1';
+      jest.spyOn(fsPromises, fsPromises.readdir.name)
+        .mockResolvedValue([]);
+      expect(service.readFxByName(fxName))
+        .rejects
+        .toEqual(`The effect ${fxName} was not found.`)
     });
   });
 });
