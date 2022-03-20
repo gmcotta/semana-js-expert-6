@@ -1,8 +1,6 @@
 import { jest, expect, describe, test, beforeEach } from "@jest/globals";
-import { JSDOM } from "jsdom";
+
 import Controller from "../../../public/controller/js/controller";
-import Service from "../../../public/controller/js/service";
-import View from "../../../public/controller/js/view";
 
 describe('#Controller - test suite for controller class', () => {
   const deps = {
