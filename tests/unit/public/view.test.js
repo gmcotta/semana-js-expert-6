@@ -240,4 +240,26 @@ describe("#View - test suite for presentation layer", () => {
       expect(result).toBeTruthy();
     });
   });
+
+  describe('onCommandClick()', () => {
+    test('', async () => {
+      const view = new View();
+      const text = 'command';
+      const button = mockButtonElement({ text });
+      const onClickElement = { srcElement: button };
+      jest.spyOn(view, 'toggleDisableCommandBtn').mockReturnValue();
+      jest.spyOn(view, 'onBtnClick').mockResolvedValue();
+      jest.useFakeTimers();
+
+      await view.onCommandClick(onClickElement);
+      jest.advanceTimersByTime(view.DISABLE_BTN_TIMEOUT);
+
+      expect(view.toggleDisableCommandBtn)
+        .toHaveBeenNthCalledWith(1, onClickElement.srcElement.classList);
+      expect(view.onBtnClick)
+        .toHaveBeenCalledWith(text);
+      expect(view.toggleDisableCommandBtn)
+        .toHaveBeenNthCalledWith(2, onClickElement.srcElement.classList);
+    });
+  });
 });
