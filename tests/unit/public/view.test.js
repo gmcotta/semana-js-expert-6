@@ -49,7 +49,7 @@ describe("#View - test suite for presentation layer", () => {
 
       expect(button.classList.add).toHaveBeenCalledWith("unassigned");
       expect(button.onclick.name).toStrictEqual("resetOnClick");
-      expect(() => button.onclick).not.toThrow();
+      expect(() => button.onclick()).not.toThrow();
     });
     test("hide = false - should remove unassigned button class and reset onclick", () => {
       const view = new View();
@@ -239,6 +239,13 @@ describe("#View - test suite for presentation layer", () => {
       view.toggleDisableCommandBtn(classList);
       expect(classList.size).toStrictEqual(1);
       expect([...classList.values()]).toStrictEqual(['active']);
+    });
+  });
+
+  describe('constructor()', () => {
+    test('should onBtnClick not throw', () => {
+      const view = new View();
+      expect(() => view.onBtnClick('test')).not.toThrow();
     });
   });
 });
