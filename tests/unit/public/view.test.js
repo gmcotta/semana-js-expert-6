@@ -24,6 +24,15 @@ describe("#View - test suite for presentation layer", () => {
     };
   }
 
+  function makeClassListElement(
+    { classes } = { classes: [] }
+  ) {
+    const classList = new Set(classes);
+    classList.contains = classList.has;
+    classList.remove = classList.delete;
+    return classList;
+  }
+
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
@@ -205,6 +214,30 @@ describe("#View - test suite for presentation layer", () => {
       expect(view.toggleBtnStart).toHaveBeenCalledWith(false);
       expect(view.changeCommandButtonsVisibility).toHaveBeenCalled();
       expect(view.onBtnClick).toHaveBeenCalledWith(text);
+    });
+  });
+
+  describe('isNotUnassignedButton()', () => {
+    test('should return false if CSS class has unassigned', () => {
+      const view = new View();
+      const button = mockButtonElement({ 
+        classList: makeClassListElement(
+          { classes: [...view.ignoreButtons.values()] }
+        )
+      });
+      const result = view.isNotUnassignedButton(button);
+      expect(result).toBeFalsy();
+    });
+
+    test('should return true if CSS class does not have unassigned', () => {
+      const view = new View();
+      const button = mockButtonElement({ 
+        classList: makeClassListElement(
+          { classes: ['whatever'] }
+        )
+      });
+      const result = view.isNotUnassignedButton(button);
+      expect(result).toBeTruthy();
     });
   });
 });
