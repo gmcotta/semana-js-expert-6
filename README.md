@@ -11,23 +11,23 @@ Marque esse projeto com uma estrela 🌟
 ## Checklist Features
 
 - Web API
-    - [x] Deve atingir 100% de cobertura de código em testes
+    - [ ] Deve atingir 100% de cobertura de código em testes
     - [ ] Deve ter testes de integração validando todas as rotas da API
     - [x] Deve entregar arquivos estáticos como Node.js Stream
     - [x] Deve entregar arquivos de música como Node.js Stream
     - [x] Dado um usuário desconectado, não deve quebrar a API
-    - [ ] Mesmo que vários comandos sejam desparados ao mesmo tempo, não deve quebrar a API
+    - [x] Mesmo que vários comandos sejam desparados ao mesmo tempo, não deve quebrar a API
     - [x] Caso aconteça um erro inesperado, a API deve continuar funcionando
-    - [ ] O projeto precisa ser executado em ambientes Linux, Mac e Windows
+    - [x] O projeto precisa ser executado em ambientes Linux, Mac e Windows
 
 - Web App 
     - Client
         - [x] Deve reproduzir a transmissão
-        - [ ] Não deve pausar se algum efeito for adicionado
+        - [x] Não deve pausar se algum efeito for adicionado
     - Controller
         - [ ] Deve atingir 100% de cobertura de código em testes
-        - [ ] Deve poder iniciar ou parar uma transmissão 
-        - [ ] Deve enviar comandos para adicionar audio efeitos à uma transmissão
+        - [x] Deve poder iniciar ou parar uma transmissão 
+        - [x] Deve enviar comandos para adicionar audio efeitos à uma transmissão
 
 ## Tarefas por aula
 
@@ -56,6 +56,8 @@ Marque esse projeto com uma estrela 🌟
 - [Boo](https://youtu.be/rYAQN11a2Dc)
 - [Fart](https://youtu.be/4PnUfYhbDDM)
 - [Laugh](https://youtu.be/TZ90IUrMNCo)
+- [Ba dum tss](https://www.youtube.com/watch?v=937zhQ27XK8)
+
 ## FAQ 
 - `NODE_OPTIONS` não é um comando reconhecido pelo sistema, o que fazer?
     - Se você estiver no Windows, a forma de criar variáveis de ambiente é diferente. Você deve usar a palavra `set` antes do comando. 
