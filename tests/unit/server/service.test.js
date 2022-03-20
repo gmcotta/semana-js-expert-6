@@ -226,4 +226,21 @@ describe('#Service', () => {
         .toEqual(`The effect ${fxName} was not found.`)
     });
   });
+
+  describe('mergeAudioStreams()', () => {
+    test('should return stream with merged audios', () => {
+      const service = new Service();
+      const song = 'fx1.mp3';
+      const readable = TestUtil.generateReadableStream(['fx']);
+      jest.spyOn(service, service._executeSoxCommand.name).mockReturnValue({
+        stdin: TestUtil.generateWritableStream('fx'),
+        stdout: TestUtil.generateReadableStream(['128k']),
+        stderr: TestUtil.generateReadableStream(['']),
+      });
+      jest.spyOn(streamPromises, streamPromises.pipeline.name)
+        .mockResolvedValue();
+      const result = service.mergeAudioStreams(song, readable);
+      expect(result).toBeInstanceOf(PassThrough);
+    });
+  })
 });
