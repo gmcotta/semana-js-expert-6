@@ -37,8 +37,14 @@ export class Controller {
       return result;
     }
 
-    return {
-      result: 'command not found'
-    };
+    const chosenFx = await this.service.readFxByName(cmd);
+    if (!chosenFx) {
+      return {
+        result: 'command not found'
+      };
+    }
+    logger.info(`Added effect to service: ${chosenFx}`);
+    this.service.appendFxStream(chosenFx);
+    return result;
   }
 }
