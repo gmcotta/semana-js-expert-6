@@ -36,7 +36,7 @@ describe("#View - test suite for presentation layer", () => {
       const view = new View();
       const button = mockButtonElement();
       jest.spyOn(document, "querySelectorAll").mockReturnValue([button]);
-      view.changeCommandButtonsVisibility(true);
+      view.changeCommandButtonsVisibility();
 
       expect(button.classList.add).toHaveBeenCalledWith("unassigned");
       expect(button.onclick.name).toStrictEqual("resetOnClick");
@@ -187,6 +187,24 @@ describe("#View - test suite for presentation layer", () => {
       view.setupBtnAction(button);
 
       expect(button.onclick.name).toStrictEqual(view.onCommandClick.bind(view).name);
+    });
+  });
+
+  describe('onStopBtn()', () => {
+    test('', async () => {
+      const view = new View();
+      const text = 'button text';
+      const button = mockButtonElement({ text });
+      jest.spyOn(view, 'toggleBtnStart').mockReturnValue();
+      jest.spyOn(view, 'changeCommandButtonsVisibility')
+        .mockReturnValue();
+      jest.spyOn(view, 'onBtnClick').mockResolvedValue();
+
+      await view.onStopBtn({ srcElement: button });
+
+      expect(view.toggleBtnStart).toHaveBeenCalledWith(false);
+      expect(view.changeCommandButtonsVisibility).toHaveBeenCalled();
+      expect(view.onBtnClick).toHaveBeenCalledWith(text);
     });
   });
 });
