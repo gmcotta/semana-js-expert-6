@@ -15,7 +15,7 @@ export default {
     songsDirectory,
     fxDirectory: join(audioDirectory, 'fx'),
   },
-  port: process.env.PORT || 3000,
+  port: process.env.PORT,
   pages: {
     homeHTML: 'home/index.html',
     controllerHTML: 'controller/index.html'
